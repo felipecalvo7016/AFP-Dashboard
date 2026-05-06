@@ -35,7 +35,7 @@ body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helv
   --amber-l:rgba(146,83,10,.08);
   /* Asset class */
   --eq:#FF4713;--fi:#008B5C;--ma:#FFCE00;
-  font-size: clamp(14px, 1.1vw, 17px);
+  font-size: clamp(14px, 0.65vw, 22px);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
@@ -59,7 +59,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 /* ── NAV ── */
 nav{position:sticky;top:0;z-index:100;display:flex;align-items:stretch;background:#000000;padding:0 clamp(10px,2vw,28px);gap:0}
 .nav-brand{font-size:.72rem;font-weight:700;letter-spacing:.14em;color:#FF4713;display:flex;align-items:center;padding-right:22px;border-right:1px solid rgba(255,255,255,.15);margin-right:8px;white-space:nowrap;text-transform:uppercase}
-.nav-tab{font-size:.67rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.55);padding:0 16px;height:42px;border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;font-family:'Inter',sans-serif}
+.nav-tab{font-size:.67rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.55);padding:0 16px;height:clamp(42px,3.2vh,58px);border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;font-family:'Inter',sans-serif}
 .nav-tab:hover{color:rgba(255,255,255,.85)}
 .nav-tab.active{color:#fff;border-bottom-color:#FF4713}
 
@@ -100,7 +100,7 @@ header{position:relative;z-index:10;padding:clamp(10px,1.2vw,16px) clamp(14px,2v
 
 /* ── SECTIONS ── */
 .sec{display:none;position:relative;z-index:10}.sec.on{display:block}
-.grid{display:grid;gap:clamp(10px,1vw,16px);padding:clamp(12px,1.5vw,20px) clamp(14px,2vw,28px);max-width:min(2400px,97vw);margin:0 auto}
+.grid{display:grid;gap:clamp(10px,1vw,20px);padding:clamp(12px,1.5vw,24px) clamp(14px,2vw,32px);max-width:min(3800px,98vw);margin:0 auto}
 .g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}
 .g12{grid-template-columns:1fr 2fr}.g21{grid-template-columns:2fr 1fr}
 .full{grid-column:1/-1}
@@ -117,7 +117,7 @@ header{position:relative;z-index:10;padding:clamp(10px,1.2vw,16px) clamp(14px,2v
 .card-title{font-size:.82rem;font-weight:700;color:var(--navy);letter-spacing:-.01em}
 .card-sub{font-size:.63rem;color:var(--muted);margin-top:2px}
 .ch{position:relative}
-.h160{height:clamp(160px,14vh,220px)}.h200{height:clamp(200px,18vh,300px)}.h240{height:clamp(240px,20vh,340px)}.h280{height:clamp(280px,22vh,380px)}.h320{height:clamp(320px,26vh,460px)}.h400{height:clamp(400px,32vh,560px)}
+.h160{height:clamp(160px,16vh,280px)}.h200{height:clamp(200px,20vh,360px)}.h240{height:clamp(240px,22vh,420px)}.h280{height:clamp(280px,24vh,480px)}.h320{height:clamp(320px,28vh,560px)}.h400{height:clamp(400px,36vh,700px)}
 
 /* ── LEGEND ── */
 .legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
