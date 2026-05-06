@@ -1007,8 +1007,9 @@ const AC_COLORS={Equity:'#FF4713','Fixed Income':'#FFCE00','Multi-Asset / Altern
 
 // ═══════════════ CHART.JS CONFIG ═══════════════
 const TT={backgroundColor:'#1a1a1a',borderColor:'#1a1a1a',borderWidth:0,titleColor:'rgba(255,255,255,.55)',bodyColor:'#ffffff',titleFont:{family:'Inter',size:10},bodyFont:{family:'Inter',size:11},padding:10,cornerRadius:3,boxPadding:4,caretSize:5};
-const XAXIS={grid:{color:'#ebebeb',drawTicks:false},ticks:{color:'#a0a0a0',font:{family:'Inter',size:Math.round(Math.min(window.innerWidth*0.0028,12))},maxTicksLimit:36,autoSkip:true,autoSkipPadding:12},border:{color:'#e0e0e0'}};
-const YAXIS=cb=>({grid:{color:'#f0f0f0',drawTicks:false},ticks:{color:'#a0a0a0',font:{family:'Inter',size:Math.round(Math.min(window.innerWidth*0.0028,12))},maxTicksLimit:8,callback:function(v){if(v===0)return'$0';if(cb){const r=cb(v);return r.replace(/(\.[0-9]*?)0+([BMK%]|$)/g,(m,d,s)=>{const t=d.replace(/\.?0+$/,'');return t+s;});}return v;}},border:{color:'#e0e0e0',dash:[2,3]}});
+const _cfs=Math.max(10,Math.min(Math.round(window.innerWidth*0.004),14));
+const XAXIS={grid:{color:'#ebebeb',drawTicks:false},ticks:{color:'#a0a0a0',font:{family:'Inter',size:_cfs},maxTicksLimit:36,autoSkip:true,autoSkipPadding:12},border:{color:'#e0e0e0'}};
+const YAXIS=cb=>({grid:{color:'#f0f0f0',drawTicks:false},ticks:{color:'#a0a0a0',font:{family:'Inter',size:_cfs},maxTicksLimit:8,callback:function(v){if(v===0)return'$0';if(cb){const r=cb(v);return r.replace(/(\.[0-9]*?)0+([BMK%]|$)/g,(m,d,s)=>{const t=d.replace(/\.?0+$/,'');return t+s;});}return v;}},border:{color:'#e0e0e0',dash:[2,3]}});
 
 function mkChart(id,config){
   if(charts[id])charts[id].destroy();
@@ -1346,7 +1347,7 @@ function rS1RevAfp(){
       responsive:true,maintainAspectRatio:false,
       interaction:{mode:'index',intersect:false},
       plugins:{
-        legend:{display:true,position:'top',labels:{color:'#2d3748',font:{size:Math.round(Math.min(window.innerWidth*0.0032,13)),family:'Inter'},boxWidth:10,padding:8}},
+        legend:{display:true,position:'top',labels:{color:'#2d3748',font:{size:_cfs,family:'Inter'},boxWidth:10,padding:8}},
         tooltip:{...TT,callbacks:{label:(c)=>{
           const raw=afpRevData[c.datasetIndex][c.dataIndex];
           return ` ${c.dataset.label}: ${c.parsed.y.toFixed(1)}% (${fmtV(raw)})`;
@@ -1356,7 +1357,7 @@ function rS1RevAfp(){
         x:{stacked:true,...XAXIS},
         y:{stacked:true,min:0,max:100,
           grid:{color:'rgba(0,0,0,0.05)'},
-          ticks:{color:'#64748b',font:{size:Math.round(Math.min(window.innerWidth*0.0032,13)),family:'Inter'},callback:v=>v+'%',stepSize:25},
+          ticks:{color:'#64748b',font:{size:_cfs,family:'Inter'},callback:v=>v+'%',stepSize:25},
           border:{color:'#dde3ea'}}
       }
     }
@@ -1390,7 +1391,7 @@ function mkStacked100Bar(canvasId, labels, datasets, colors, seriesLabels){
         legend:{
           display:true,
           position:'top',
-          labels:{color:'#2d3748',font:{size:Math.round(Math.min(window.innerWidth*0.0032,13)),family:'Inter'},boxWidth:10,padding:10}
+          labels:{color:'#2d3748',font:{size:_cfs,family:'Inter'},boxWidth:10,padding:10}
         },
         tooltip:{
           ...TT,
@@ -1405,7 +1406,7 @@ function mkStacked100Bar(canvasId, labels, datasets, colors, seriesLabels){
           grid:{display:false},
           ticks:{
             color:'#64748b',
-            font:{size:Math.round(Math.min(window.innerWidth*0.0032,13)),family:'Inter'},
+            font:{size:_cfs,family:'Inter'},
             maxRotation:labels.length>6?45:0,
             autoSkip:true,
             maxTicksLimit:labels.length>12?8:labels.length
@@ -1419,7 +1420,7 @@ function mkStacked100Bar(canvasId, labels, datasets, colors, seriesLabels){
           grid:{color:'rgba(0,0,0,0.05)'},
           ticks:{
             color:'#64748b',
-            font:{size:Math.round(Math.min(window.innerWidth*0.0032,13)),family:'Inter'},
+            font:{size:_cfs,family:'Inter'},
             callback:v=>v+'%',
             stepSize:25
           },
@@ -1481,7 +1482,7 @@ function rS1AumChart(){
         },footerColor:'#ffffff',footerFont:{family:'Inter',size:11,weight:'bold'}}},
         scales:{
           x:{stacked:true,...XAXIS},
-          y:{stacked:true,min:0,grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#64748b',font:{size:Math.round(Math.min(window.innerWidth*0.0032,13)),family:'Inter'},callback:v=>fmtV(v)},border:{color:'#dde3ea'}}
+          y:{stacked:true,min:0,grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#64748b',font:{size:_cfs,family:'Inter'},callback:v=>fmtV(v)},border:{color:'#dde3ea'}}
         }}
     });
   } else {
@@ -1495,7 +1496,7 @@ function rS1AumChart(){
       data:{labels:ml,datasets:[{label:vehF,data,backgroundColor:col,borderColor:col,borderWidth:0,borderRadius:2}]},
       options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
         plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>` ${c.dataset.label}: ${fmtV(c.raw)}`}}},
-        scales:{x:{...XAXIS},y:{min:0,grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#64748b',font:{size:Math.round(Math.min(window.innerWidth*0.0032,13)),family:'Inter'},callback:v=>fmtV(v)},border:{color:'#dde3ea'}}}}
+        scales:{x:{...XAXIS},y:{min:0,grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#64748b',font:{size:_cfs,family:'Inter'},callback:v=>fmtV(v)},border:{color:'#dde3ea'}}}}
     });
   }
 }
@@ -1585,14 +1586,14 @@ function rS0AfpSplit(){
       responsive:true,maintainAspectRatio:false,
       interaction:{mode:'index',intersect:false},
       plugins:{
-        legend:{display:true,position:'top',labels:{color:'#2d3748',font:{size:Math.round(Math.min(window.innerWidth*0.0032,13)),family:'Inter'},boxWidth:10,padding:8}},
+        legend:{display:true,position:'top',labels:{color:'#2d3748',font:{size:_cfs,family:'Inter'},boxWidth:10,padding:8}},
         tooltip:{...TT,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y.toFixed(1)}%`}}
       },
       scales:{
         x:{stacked:true,...XAXIS},
         y:{stacked:true,min:0,max:100,
           grid:{color:'rgba(0,0,0,0.05)'},
-          ticks:{color:'#64748b',font:{size:Math.round(Math.min(window.innerWidth*0.0032,13)),family:'Inter'},callback:v=>v+'%',stepSize:25},
+          ticks:{color:'#64748b',font:{size:_cfs,family:'Inter'},callback:v=>v+'%',stepSize:25},
           border:{color:'#dde3ea'}}
       }
     }
@@ -2116,14 +2117,14 @@ function rS1Comp2(){
         responsive:true,maintainAspectRatio:false,
         interaction:{mode:'index',intersect:false},
         plugins:{
-          legend:{display:true,position:'top',labels:{color:'#2d3748',font:{size:Math.round(Math.min(window.innerWidth*0.0032,13)),family:'Inter'},boxWidth:10,padding:10}},
+          legend:{display:true,position:'top',labels:{color:'#2d3748',font:{size:_cfs,family:'Inter'},boxWidth:10,padding:10}},
           tooltip:{...TT,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y.toFixed(1)}%`}}
         },
         scales:{
           x:{stacked:true,...XAXIS},
           y:{stacked:true,min:0,max:100,
             grid:{color:'rgba(0,0,0,0.05)'},
-            ticks:{color:'#64748b',font:{size:Math.round(Math.min(window.innerWidth*0.0032,13)),family:'Inter'},callback:v=>v+'%',stepSize:25},
+            ticks:{color:'#64748b',font:{size:_cfs,family:'Inter'},callback:v=>v+'%',stepSize:25},
             border:{color:'#dde3ea'}}
         }
       }
@@ -2578,7 +2579,7 @@ function rS2Fund(){
     borderRadius:2,
     stack:'aum'
   }));
-  mkChart('c-s2f-aum',{type:'bar',data:{labels:s2fml,datasets:fundDs},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'top',labels:{color:'#2d3748',font:{size:Math.round(Math.min(window.innerWidth*0.0032,13)),family:'Inter'},boxWidth:10,padding:10}},tooltip:{...TT,callbacks:{label:c=>{const tot=fundDs.reduce((s,d)=>s+(d.data[c.dataIndex]||0),0);const pct=tot>0?(c.raw/tot*100).toFixed(1):'0.0';return ` ${c.dataset.label}: $${c.raw.toFixed(2)}B (${pct}%)`;},footer:items=>{const tot=items.reduce((s,c)=>s+c.raw,0);return`Total: $${tot.toFixed(2)}B`;},footerColor:'#1a1a2e'}}},scales:{x:{stacked:true,...XAXIS},y:{stacked:true,...YAXIS(v=>'$'+v+'B'),min:0}}}});
+  mkChart('c-s2f-aum',{type:'bar',data:{labels:s2fml,datasets:fundDs},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'top',labels:{color:'#2d3748',font:{size:_cfs,family:'Inter'},boxWidth:10,padding:10}},tooltip:{...TT,callbacks:{label:c=>{const tot=fundDs.reduce((s,d)=>s+(d.data[c.dataIndex]||0),0);const pct=tot>0?(c.raw/tot*100).toFixed(1):'0.0';return ` ${c.dataset.label}: $${c.raw.toFixed(2)}B (${pct}%)`;},footer:items=>{const tot=items.reduce((s,c)=>s+c.raw,0);return`Total: $${tot.toFixed(2)}B`;},footerColor:'#1a1a2e'}}},scales:{x:{stacked:true,...XAXIS},y:{stacked:true,...YAXIS(v=>'$'+v+'B'),min:0}}}});
   // Sync manager filter UI
   const mgrVehSel=document.getElementById('s2f-mgr-veh');
   if(mgrVehSel)mgrVehSel.value=s2FundMgrVeh;
@@ -2732,7 +2733,7 @@ function _ytdHorizBar(chartId,labels,vals,totalElId,xRange){
     options:{
       indexAxis:'y',responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{...TT,callbacks:{label:c=>` YTD NNB: ${c.raw>=0?'+':''}${fmtV(c.raw)}`}}},
-      scales:{x:xOpts,y:{grid:{display:false},ticks:{color:'#64748b',font:{size:Math.round(Math.min(window.innerWidth*0.0028,12)),family:'Inter'},maxTicksLimit:50},border:{color:'#e0e0e0'}}}
+      scales:{x:xOpts,y:{grid:{display:false},ticks:{color:'#64748b',font:{size:_cfs,family:'Inter'},maxTicksLimit:50},border:{color:'#e0e0e0'}}}
     }
   });
 }
@@ -2767,7 +2768,7 @@ function rS3(){
     data:mr.map(m=>{let it=getFiltered(m,'ETF',afpF,fundF);if(ac!=='All')it=it.filter(x=>getAC(x.category)===ac);const tot=totalAUM(it);if(!tot)return 0;const topAum=top6.reduce((s,mgr)=>s+totalAUM(it.filter(x=>x.manager===mgr)),0);return+((tot-topAum)/tot*100).toFixed(2);}),
     backgroundColor:CPAL_S3[6]+'bb',borderColor:CPAL_S3[6],borderWidth:1,fill:true,tension:.3,pointRadius:0,pointHoverRadius:4
   });
-  mkChart('ch-s3-trend',{type:'line',data:{labels:ml,datasets:s3ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'top',labels:{color:'#2d3748',font:{size:Math.round(Math.min(window.innerWidth*0.0032,13)),family:'Inter'},boxWidth:10,padding:10}},tooltip:{...TT,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y.toFixed(1)}%`}}},scales:{x:{stacked:true,...XAXIS},y:{stacked:true,min:0,max:100,grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#64748b',font:{size:Math.round(Math.min(window.innerWidth*0.0032,13)),family:'Inter'},callback:v=>v+'%',stepSize:25},border:{color:'#dde3ea'}}}}});
+  mkChart('ch-s3-trend',{type:'line',data:{labels:ml,datasets:s3ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'top',labels:{color:'#2d3748',font:{size:_cfs,family:'Inter'},boxWidth:10,padding:10}},tooltip:{...TT,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y.toFixed(1)}%`}}},scales:{x:{stacked:true,...XAXIS},y:{stacked:true,min:0,max:100,grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#64748b',font:{size:_cfs,family:'Inter'},callback:v=>v+'%',stepSize:25},border:{color:'#dde3ea'}}}}});
   // Compute exits: ETFs in prev month (all filters matching) but not in current
   const _s3Mi=MONTHS.indexOf(curM);
   let _s3ExitItems=[];
@@ -2832,7 +2833,7 @@ function rS4(){
     data:mr.map(m=>{let it=getFiltered(m,'Mutual Fund',afpF,fundF);if(ac!=='All')it=it.filter(x=>getAC(x.category)===ac);const tot=totalAUM(it);if(!tot)return 0;const topAum=forcedMgrs.reduce((s,mgr)=>s+totalAUM(it.filter(x=>x.manager===mgr)),0);return+((tot-topAum)/tot*100).toFixed(2);}),
     backgroundColor:'#888888bb',borderColor:'#888888',borderWidth:1,fill:true,tension:.3,pointRadius:0,pointHoverRadius:4
   });
-  mkChart('ch-s4-trend',{type:'line',data:{labels:ml,datasets:s4ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'top',labels:{color:'#2d3748',font:{size:Math.round(Math.min(window.innerWidth*0.0032,13)),family:'Inter'},boxWidth:10,padding:10}},tooltip:{...TT,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y.toFixed(1)}%`}}},scales:{x:{stacked:true,...XAXIS},y:{stacked:true,min:0,max:100,grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#64748b',font:{size:Math.round(Math.min(window.innerWidth*0.0032,13)),family:'Inter'},callback:v=>v+'%',stepSize:25},border:{color:'#dde3ea'}}}}});
+  mkChart('ch-s4-trend',{type:'line',data:{labels:ml,datasets:s4ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'top',labels:{color:'#2d3748',font:{size:_cfs,family:'Inter'},boxWidth:10,padding:10}},tooltip:{...TT,callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y.toFixed(1)}%`}}},scales:{x:{stacked:true,...XAXIS},y:{stacked:true,min:0,max:100,grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#64748b',font:{size:_cfs,family:'Inter'},callback:v=>v+'%',stepSize:25},border:{color:'#dde3ea'}}}}});
   // Compute exits: MFs in prev month (all filters matching) but not in current
   const _s4Mi=MONTHS.indexOf(curM);
   let _s4ExitItems=[];
