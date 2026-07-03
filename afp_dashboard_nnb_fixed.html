@@ -480,6 +480,27 @@ td.r{text-align:right}
     </div>
     <div class="ch h200"><canvas id="ch-s0-nnb"></canvas></div>
   </div>
+  <div class="card full">
+    <div class="card-hdr" style="flex-wrap:wrap;gap:8px">
+      <div><div class="card-title">All Holdings — ETFs &amp; Mutual Funds</div><div class="card-sub" id="s0info"></div></div>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+        <button class="tbl-dl-btn" onclick="xlAll()" title="Download all holdings as Excel"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 1v6M2.5 7l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 10h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> xlsx</button>
+        <select class="fsel" id="s0-veh" onchange="rS0Table()"><option value="All">All Vehicles</option><option value="ETF">ETF</option><option value="Mutual Fund">Mutual Fund</option></select>
+        <select class="fsel" id="s0-afp" onchange="rS0Table()"><option value="All">All AFPs</option><option>Integra</option><option>Prima</option><option>Profuturo</option><option>Habitat</option></select>
+        <select class="fsel" id="s0-fund" onchange="rS0Table()"><option value="All">All Funds</option><option value="Fondo 1">Fondo 1</option><option value="Fondo 2">Fondo 2</option><option value="Fondo 3">Fondo 3</option></select>
+        <select class="fsel" id="s0-mgr" onchange="rS0Table()"><option value="All">All Managers</option></select>
+        <div class="btn-group">
+          <button class="btn active" onclick="setS0AC('All',this)">All</button>
+          <button class="btn" onclick="setS0AC('Equity',this)">Equity</button>
+          <button class="btn" onclick="setS0AC('Fixed Income',this)">Fixed Income</button>
+          <button class="btn" onclick="setS0AC('Multi-Asset / Alternatives',this)">Multi</button>
+        </div>
+        <select class="fsel" id="s0-flow" onchange="rS0Table()"><option value="All">All holdings</option><option value="New">New this month</option><option value="Exited">Exited this month</option></select>
+        <div style="display:flex;align-items:center;gap:4px;flex-wrap:nowrap"><span style="font-size:.59rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;font-weight:600">Group:</span><div id="s0-pivot-chips" style="display:flex;align-items:center;gap:2px"></div></div>
+      </div>
+    </div>
+    <div id="s0t"></div>
+  </div>
 </div>
 </div>
 
@@ -698,7 +719,7 @@ td.r{text-align:right}
     <div id="s3t"></div>
   </div>
   <div class="card full">
-    <div class="card-hdr"><div><div class="card-title">Top 20 ETFs — Competitive Battlemap</div><div class="card-sub">system-wide, unfiltered · click a dot to mark: <span style="color:#109648;font-weight:700">●</span> attacking &nbsp;<span style="color:#e6b400;font-weight:700">●</span> planning &nbsp;<span style="color:#c82828;font-weight:700">●</span> can't compete (click again to clear) · build b9</div></div><div style="display:flex;gap:6px;align-items:center"><button class="btn" id="s3-battle-brbtn" onclick="ragToggleBR()">Hide BlackRock</button><button class="btn" onclick="ragExport()" title="download + copy current marks; give them to Claude to bake into the file">⬇ Export marks</button><button class="btn" onclick="ragReset()" title="discard your local changes, back to the marks saved in the file">Reset to file</button></div></div>
+    <div class="card-hdr"><div><div class="card-title">Top 20 ETFs — Competitive Battlemap</div><div class="card-sub">system-wide, unfiltered · click a dot to mark: <span style="color:#109648;font-weight:700">●</span> attacking &nbsp;<span style="color:#e6b400;font-weight:700">●</span> planning &nbsp;<span style="color:#c82828;font-weight:700">●</span> can't compete (click again to clear) · build b10</div></div><div style="display:flex;gap:6px;align-items:center"><button class="btn" id="s3-battle-brbtn" onclick="ragToggleBR()">Hide BlackRock</button><button class="btn" onclick="ragExport()" title="download + copy current marks; give them to Claude to bake into the file">⬇ Export marks</button><button class="btn" onclick="ragReset()" title="discard your local changes, back to the marks saved in the file">Reset to file</button></div></div>
     <div id="s3-battle"></div>
   </div>
   <div class="card">
@@ -894,11 +915,12 @@ function getByFund(m,fund){return _build(_mi(m)).byFund[fund]||[];}
 function getFund(m,afp,fund){return _build(_mi(m)).byAfpFund[afp]?.[fund]||[];}
 function getFiltered(m,veh,afpF,fundF){
   let it;
-  if(afpF==='All'&&fundF==='All')it=getAll(m).filter(x=>x.vehicle===veh);
-  else if(afpF!=='All'&&fundF==='All')it=getAfp(m,afpF).filter(x=>x.vehicle===veh);
-  else if(afpF==='All'&&fundF!=='All')it=getByFund(m,fundF).filter(x=>x.vehicle===veh);
-  else it=getFund(m,afpF,fundF).filter(x=>x.vehicle===veh);
-  return it.sort((a,b)=>b.aum-a.aum);
+  if(afpF==='All'&&fundF==='All')it=getAll(m);
+  else if(afpF!=='All'&&fundF==='All')it=getAfp(m,afpF);
+  else if(afpF==='All'&&fundF!=='All')it=getByFund(m,fundF);
+  else it=getFund(m,afpF,fundF);
+  if(veh&&veh!=='All')it=it.filter(x=>x.vehicle===veh);
+  return it.slice().sort((a,b)=>b.aum-a.aum);
 }
 
 // ═══════════════ UTILS ═══════════════
@@ -1062,6 +1084,8 @@ function setS3Ucits(v,btn){s3Ucits=v;btn.closest('.btn-group').querySelectorAll(
 let s1ProdGrouped=false, s3Grouped=false, s4Grouped=false;
 let s1PivotOrder=['assetClass','category','manager','afp','fund','instrument'];
 let s1PivotActive=new Set(['assetClass','category']);
+let s0PivotOrder=['vehicle','assetClass','category','manager','afp','fund','instrument'];
+let s0PivotActive=new Set(['vehicle','assetClass','category']);
 let s3PivotOrder=['assetClass','category','manager','afp','fund','instrument'];
 let s3PivotActive=new Set(['assetClass','category','manager']);
 let s4PivotOrder=['assetClass','category','manager','afp','fund','instrument'];
@@ -1070,7 +1094,7 @@ let s2HPivotOrder=['assetClass','category','manager','fund','instrument'];
 let s2HPivotActive=new Set(['assetClass','category','manager']);
 let s2FHPivotOrder=['assetClass','category','manager','fund','instrument'];
 let s2FHPivotActive=new Set(['assetClass','category','manager']);
-const PIVOT_LABELS={'assetClass':'Asset Class','category':'Category','manager':'Manager','afp':'AFP','fund':'Fondo','instrument':'Fund'};
+const PIVOT_LABELS={'vehicle':'Vehicle','assetClass':'Asset Class','category':'Category','manager':'Manager','afp':'AFP','fund':'Fondo','instrument':'Fund'};
 let s2OvVeh='All',s2OvAC='All',s2OvMgr='All',s2OvFrom=null,s2OvTo=null,s2HoldGrouped=true,s2FundHoldGrouped=true,s2FundFrom=null,s2FundTo=null,s2FundVeh='All',s2FundAC='All',s2FundMgrVeh='All',s2FundMgrAC='All',s2FundTrendVeh='All';
 let rangeFrom=null,rangeTo=null;
 const rendered={},_sortState={},charts={};
@@ -1378,6 +1402,7 @@ function setCatVeh(v,btn,grp){catVeh=v==='MF'?'Mutual Fund':v;btn.closest('.btn-
 
 function rS0(){
   insS0();
+  rS0Table();
   const items=getAll(curM),total=totalAUM(items);
   const etfAUM=totalAUM(items.filter(x=>x.vehicle==='ETF'));
   // Populate AUM manager dropdown (once)
@@ -1807,6 +1832,62 @@ function rS1Ov(items,br,total,brT){
   rS1NNBChart(br,brT);
 }
 
+function setS0AC(ac,btn){acFilters['s0']=ac;btn.closest('.btn-group').querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');rS0Table();}
+function rS0Table(){
+  const veh=(document.getElementById('s0-veh')||{}).value||'All';
+  const afpF=(document.getElementById('s0-afp')||{}).value||'All';
+  const fundF=(document.getElementById('s0-fund')||{}).value||'All';
+  const mgrF=(document.getElementById('s0-mgr')||{}).value||'All';
+  const ac=acFilters['s0']||'All';
+  const allIt=getFiltered(curM,'All','All','All');
+  const sel=document.getElementById('s0-mgr');
+  if(sel){const cur=mgrF;sel.innerHTML='<option value="All">All Managers</option>'+[...new Set(allIt.map(x=>x.manager))].sort().map(m=>`<option value="${esc(m)}"${m===cur?' selected':''}>${esc(m)}</option>`).join('');}
+  const _s0GetM=m=>{let it2=getFiltered(m,veh,afpF,fundF);if(mgrF!=='All')it2=it2.filter(x=>x.manager===mgrF);if(ac!=='All')it2=it2.filter(x=>getAC(x.category)===ac);return it2;};
+  let disp=_s0GetM(curM);
+  const s0Flow=(document.getElementById('s0-flow')||{}).value||'All';
+  const mi=MONTHS.indexOf(curM);
+  const prevIt=mi>0?_s0GetM(MONTHS[mi-1]):[];
+  const prevSet=new Set(prevIt.map(x=>x.isin));
+  const exits=mi>0?getExitItems(disp,prevIt):[];
+  let dispPivot=disp;
+  if(s0Flow==='New')dispPivot=disp.filter(x=>!prevSet.has(x.isin));
+  else if(s0Flow==='Exited')dispPivot=[];
+  const info=document.getElementById('s0info');
+  if(info)info.textContent=s0Flow==='All'?`${disp.length} holdings · ${fmtV(totalAUM(disp))}`:s0Flow==='New'?`${dispPivot.length} new entries of ${disp.length} holdings`:`showing exits only · ${disp.length} held`;
+  renderPivotTable(dispPivot,'s0t','#0c2340',{showNNB:true,month:curM,exitItems:s0Flow==='New'?[]:exits,getMonthItems:_s0GetM},s0PivotOrder.filter(l=>s0PivotActive.has(l)));
+  renderS0PivotChips();
+}
+function renderS0PivotChips(){
+  const el=document.getElementById('s0-pivot-chips');if(!el)return;
+  el.innerHTML='';
+  s0PivotOrder.forEach((lvl,i)=>{
+    const active=s0PivotActive.has(lvl);
+    const chip=document.createElement('div');
+    chip.draggable=true;chip.dataset.idx=i;
+    chip.style.cssText=active
+      ?'display:inline-flex;align-items:center;gap:3px;padding:2px 7px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;font-size:.59rem;font-weight:600;color:var(--text2);cursor:grab;user-select:none;white-space:nowrap'
+      :'display:inline-flex;align-items:center;gap:3px;padding:2px 7px;background:transparent;border:1px dashed var(--border2);border-radius:10px;font-size:.59rem;font-weight:600;color:var(--muted2);cursor:grab;user-select:none;white-space:nowrap;opacity:.5';
+    chip.title=active?'Click to hide this group level':'Click to show this group level';
+    chip.innerHTML='<span style="color:var(--muted2);font-size:.55rem;letter-spacing:-.05em">⠿ </span>'+PIVOT_LABELS[lvl];
+    chip.addEventListener('click',()=>{
+      if(active){if(s0PivotActive.size>1)s0PivotActive.delete(lvl);}else{s0PivotActive.add(lvl);}
+      rS0Table();
+    });
+    chip.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',String(i));chip.style.opacity='.4';});
+    chip.addEventListener('dragend',()=>{chip.style.opacity=s0PivotActive.has(lvl)?'1':'.5';});
+    chip.addEventListener('dragover',e=>{e.preventDefault();});
+    chip.addEventListener('drop',e=>{
+      e.preventDefault();
+      const from=parseInt(e.dataTransfer.getData('text/plain')),to=parseInt(chip.dataset.idx);
+      if(from===to)return;
+      const moved=s0PivotOrder.splice(from,1)[0];
+      s0PivotOrder.splice(to,0,moved);
+      rS0Table();
+    });
+    el.appendChild(chip);
+    if(i<s0PivotOrder.length-1){const a=document.createElement('span');a.style.cssText='font-size:.55rem;color:var(--muted2);padding:0 1px';a.textContent=' → ';el.appendChild(a);}
+  });
+}
 function rS1ProdRefresh(){delete rendered['1-'+curM+'-1'];rS1Prod();}
 function rS2FundRefresh(){delete rendered['2-'+curAfp+'-'+curM+'-2'];rS2Fund();}
 function toggleS1Grouped(){
@@ -1978,6 +2059,7 @@ function renderPivotTable(items,containerId,color,opts,pivotOrder){
   const leafVal=(m,lf)=>(lf._exited&&m===primary)?0:(ctxMap(m,lf._afp,lf._fund).get(lf.isin)||0);
   const lvls=pivotOrder;
   function lvlKey(it,level){
+    if(level==='vehicle')return it.vehicle||'?';
     if(level==='assetClass')return getAC(it.category)||'Other';
     if(level==='category')return it.category;
     if(level==='manager')return it.manager;
