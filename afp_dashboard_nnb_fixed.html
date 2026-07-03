@@ -698,7 +698,7 @@ td.r{text-align:right}
     <div id="s3t"></div>
   </div>
   <div class="card full">
-    <div class="card-hdr"><div><div class="card-title">Top 30 ETFs — Competitive Battlemap</div><div class="card-sub">system-wide, unfiltered · click a dot to mark: <span style="color:#109648;font-weight:700">●</span> attacking &nbsp;<span style="color:#e6b400;font-weight:700">●</span> planning &nbsp;<span style="color:#c82828;font-weight:700">●</span> can't compete (click again to clear) · build b8</div></div><div style="display:flex;gap:6px;align-items:center"><button class="btn" onclick="ragExport()" title="download + copy current marks; give them to Claude to bake into the file">⬇ Export marks</button><button class="btn" onclick="ragReset()" title="discard your local changes, back to the marks saved in the file">Reset to file</button></div></div>
+    <div class="card-hdr"><div><div class="card-title">Top 20 ETFs — Competitive Battlemap</div><div class="card-sub">system-wide, unfiltered · click a dot to mark: <span style="color:#109648;font-weight:700">●</span> attacking &nbsp;<span style="color:#e6b400;font-weight:700">●</span> planning &nbsp;<span style="color:#c82828;font-weight:700">●</span> can't compete (click again to clear) · build b9</div></div><div style="display:flex;gap:6px;align-items:center"><button class="btn" id="s3-battle-brbtn" onclick="ragToggleBR()">Hide BlackRock</button><button class="btn" onclick="ragExport()" title="download + copy current marks; give them to Claude to bake into the file">⬇ Export marks</button><button class="btn" onclick="ragReset()" title="discard your local changes, back to the marks saved in the file">Reset to file</button></div></div>
     <div id="s3-battle"></div>
   </div>
   <div class="card">
@@ -3149,14 +3149,14 @@ function rS5(){
 function renderInsights(elId,blocks){
   const el=document.getElementById(elId);if(!el)return;
   if(blocks.length&&typeof blocks[0]==='string')blocks=[{t:'Highlights',items:blocks}];
-  const panel=b=>`<div style="grid-column:span ${b.w||1};background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);border-radius:6px;padding:10px 14px">
-      <div style="font-family:'DM Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;color:#FFCE00;margin-bottom:7px">${b.t}</div>
-      <ul style="margin:0;padding-left:15px;display:flex;flex-direction:column;gap:5px">${b.items.filter(Boolean).map(x=>`<li style="font-size:.76rem;color:#e8eef5;line-height:1.55">${x}</li>`).join('')}</ul></div>`;
-  el.innerHTML=`<div style="margin:0 32px .9rem;padding:14px 18px;background:linear-gradient(135deg,#0c2340,#173a5e);border-radius:8px;border-left:4px solid #FF4713">
-    <div style="font-family:'DM Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:#fff;margin-bottom:10px">◆ Insights — BlackRock lens · ${lbl(curM)}</div>
+  const panel=b=>`<div style="grid-column:span ${b.w||1};background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 14px">
+      <div style="font-family:'DM Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;color:#FF4713;margin-bottom:7px">${b.t}</div>
+      <ul style="margin:0;padding-left:15px;display:flex;flex-direction:column;gap:5px">${b.items.filter(Boolean).map(x=>`<li style="font-size:.76rem;color:var(--text);line-height:1.55">${x}</li>`).join('')}</ul></div>`;
+  el.innerHTML=`<div style="margin:0 32px .9rem;padding:12px 16px;background:#fff;border:1px solid var(--border);border-left:4px solid #FF4713;border-radius:8px">
+    <div style="font-family:'DM Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--navy);margin-bottom:10px"><span style="color:#FF4713">◆</span> Insights — BlackRock lens · ${lbl(curM)}</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:12px">${blocks.map(panel).join('')}</div></div>`;
 }
-const _iB=s=>`<b style="color:#fff">${esc(String(s))}</b>`;
+const _iB=s=>`<b style="color:var(--navy)">${esc(String(s))}</b>`;
 const _iPM=(v,d)=>(v>=0?'+':'')+v.toFixed(d==null?1:d);
 const _iPM0=v=>(v>=0?'+':'')+fmtV(v);
 function _iNNB(items,prevItems){return items.concat(getExitItems(items,prevItems)).reduce((s,it)=>s+(calcNNB(it.isin,curM)||0),0);}
@@ -3362,10 +3362,10 @@ function insS6(res,sys){
   ]);
 }
 
-// ═══════════════ TOP-30 ETF COMPETITIVE BATTLEMAP ═══════════════
-const BATTLE_RAG_BASE={}; 
-const BATTLE_ALT_BASE={}; // manual BlackRock-alternative texts baked into the file (isin -> text; overrides the auto-suggestion) // status marks baked into the file (shared via GitHub). Local clicks override; use "Export marks" then have Claude bake them in before pushing.
-const BLK_ALT_FALLBACK={'QQQ':['CNDX — iShares Nasdaq-100 UCITS','0.30%'],'QQQM':['CNDX — iShares Nasdaq-100 UCITS','0.30%'],'SPY':['IVV — iShares Core S&P 500','0.03%'],'VOO':['IVV — iShares Core S&P 500','0.03%'],'SPYM':['IVV — iShares Core S&P 500','0.03%'],'VWO':['IEMG — iShares Core MSCI EM','0.09%'],'SMH':['SOXX — iShares Semiconductor','0.35%'],'VT':['ACWI — iShares MSCI ACWI','0.32%'],'VGT':['IYW — iShares U.S. Technology','0.39%']};
+// ═══════════════ TOP-20 ETF COMPETITIVE BATTLEMAP ═══════════════
+const BATTLE_RAG_BASE={}; // status marks baked into the file (shared via GitHub). Local clicks override; use "Export marks" then have Claude bake them in before pushing.
+let battleExclBR=false;
+function ragToggleBR(){battleExclBR=!battleExclBR;rS3Battlemap();}
 window.__ragMem=window.__ragMem||{};
 function _lsGet(key){try{const v=localStorage.getItem(key);if(v!=null)return v;}catch(e){}return window.__ragMem[key]||null;}
 function _lsSet(key,val){let ok=false;try{localStorage.setItem(key,val);ok=true;}catch(e){}if(!ok)window.__ragMem[key]=val;}
@@ -3380,36 +3380,25 @@ function _ragGet(){
 function _ragSet(isin,v){
   const loc=_ragLocal();
   loc[isin]=v||'none';
-  if((BATTLE_RAG_BASE[isin]||'none')===(v||'none'))delete loc[isin]; // matches file -> no override needed
+  if((BATTLE_RAG_BASE[isin]||'none')===(v||'none'))delete loc[isin];
   _lsSet('afpBattleRag',JSON.stringify(loc));
   rS3Battlemap();
 }
-function _altLocal(){try{return JSON.parse(_lsGet('afpBattleAlt')||'{}');}catch(e){return {};}}
-function _altGet(){
-  const merged={...BATTLE_ALT_BASE};
-  const loc=_altLocal();
-  Object.keys(loc).forEach(k=>{if(loc[k]==='none')delete merged[k];else merged[k]=loc[k];});
-  return merged;
-}
-function _altSet(isin,text){
-  text=(text||'').trim();
-  const loc=_altLocal();
-  const auto=!text;
-  loc[isin]=auto?'none':text;
-  if((BATTLE_ALT_BASE[isin]||'none')===(auto?'none':text))delete loc[isin];
-  _lsSet('afpBattleAlt',JSON.stringify(loc));
-  rS3Battlemap();
+function _ragCycle(isin){
+  const cur=_ragGet()[isin]||'';
+  const next=cur===''?'g':cur==='g'?'y':cur==='y'?'r':'';
+  _ragSet(isin,next);
 }
 function ragExport(){
-  const merged={marks:_ragGet(),alts:_altGet()};
+  const merged=_ragGet();
   const json=JSON.stringify(merged,null,1);
   const blob=new Blob([json],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);a.download='battle_marks.json';a.click();
   if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(json).catch(()=>{});
-  alert(Object.keys(merged.marks).length+' mark(s), '+Object.keys(merged.alts).length+' alternative edit(s) exported to battle_marks.json (and clipboard). Drop the file in the Claude AFPs folder and ask Claude to bake the marks into the dashboard before pushing to GitHub.');
+  alert(Object.keys(merged).length+' mark(s) exported to battle_marks.json (and clipboard). Drop the file in the Claude AFPs folder and ask Claude to bake the marks into the dashboard before pushing to GitHub.');
 }
-function ragReset(){_lsDel('afpBattleRag');_lsDel('afpBattleAlt');rS3Battlemap();}
+function ragReset(){_lsDel('afpBattleRag');rS3Battlemap();}
 function _afpNNB(isin,afp,month){
   const mi=MONTHS.indexOf(month);if(mi<=0)return null;
   const prevM=MONTHS[mi-1];
@@ -3421,20 +3410,14 @@ function _afpNNB(isin,afp,month){
   const pf=nv&&nv[month]&&nv[prevM]?nv[month]/nv[prevM]:1;
   return a-p*pf;
 }
-function _ragCycle(isin){
-  const cur=_ragGet()[isin]||'';
-  const next=cur===''?'g':cur==='g'?'y':cur==='y'?'r':'';
-  _ragSet(isin,next);
-}
 function rS3Battlemap(){
   const el=document.getElementById('s3-battle');if(!el)return;
-  const univ=getFiltered(curM,'ETF','All','All');
-  const all=univ.slice().sort((a,b)=>b.aum-a.aum).slice(0,30);
+  const btn=document.getElementById('s3-battle-brbtn');
+  if(btn)btn.textContent=battleExclBR?'Show BlackRock':'Hide BlackRock';
+  let pool=getFiltered(curM,'ETF','All','All');
+  if(battleExclBR)pool=pool.filter(x=>x.manager!=='BlackRock');
+  const all=pool.slice().sort((a,b)=>b.aum-a.aum).slice(0,20);
   const rag=_ragGet();
-  const brByCat={};
-  univ.filter(x=>x.manager==='BlackRock').forEach(x=>{
-    if(!brByCat[x.category]||x.aum>brByCat[x.category].aum)brByCat[x.category]=x;
-  });
   const aMaps={};AFPS_L.forEach(a=>{aMaps[a]=new Map(getAfp(curM,a).map(x=>[x.isin,x.aum]));});
   const th="padding:6px 8px;font-family:'DM Mono',monospace;font-size:.55rem;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);text-align:right;position:sticky;top:0;background:var(--bg3);white-space:nowrap;z-index:2";
   const td="padding:5px 8px;font-family:'DM Mono',monospace;font-size:.63rem;text-align:right;border-bottom:1px solid rgba(26,37,53,.28);white-space:nowrap";
@@ -3443,22 +3426,12 @@ function rS3Battlemap(){
     +AFPS_L.map(a=>`<th style="${th}" title="AUM ${a}">${a.slice(0,3)} $</th>`).join('')
     +`<th style="${th}">NNB</th>`
     +AFPS_L.map(a=>`<th style="${th}" title="NNB ${a} (price-adjusted)">${a.slice(0,3)} Δ</th>`).join('')
-    +`<th style="${th};text-align:left">BlackRock alternative · TER</th></tr></thead><tbody>`;
+    +`</tr></thead><tbody>`;
   all.forEach((x,i)=>{
     const st=rag[x.isin]||'';
     const tint=st==='g'?'background:rgba(16,150,72,.13)':st==='y'?'background:rgba(230,180,0,.16)':st==='r'?'background:rgba(200,40,40,.12)':'';
     const tdr=td+(tint?';'+tint.replace('background','background-color'):'');
     const nnb=calcNNB(x.isin,curM)||0;
-    const altOv=_altGet()[x.isin];
-    let alt='—',manual=false;
-    if(altOv){alt=esc(altOv);manual=true;}
-    else if(x.manager==='BlackRock')alt='<span style="color:#FF4713;font-weight:700">own product</span>';
-    else{
-      const b=brByCat[x.category];
-      if(b&&b.isin!==x.isin)alt=`<b>${esc(b.ticker||'')}</b> — ${esc(trunc(b.name,30))} · ${fmtBps(b.ter)}`;
-      else if(BLK_ALT_FALLBACK[x.ticker])alt=`<b>${esc(BLK_ALT_FALLBACK[x.ticker][0])}</b> · ${BLK_ALT_FALLBACK[x.ticker][1]}`;
-    }
-    const altCell=`<span contenteditable="true" spellcheck="false" onclick="event.stopPropagation()" onblur="_altSet('${x.isin}',this.textContent)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" title="click to edit — your text replaces the suggestion; empty restores it" style="outline:none;cursor:text;border-bottom:1px dashed ${manual?'#FF4713':'var(--border2)'};padding-bottom:1px">${alt}</span>${manual?`<span onclick="event.stopPropagation();_altSet('${x.isin}','')" title="restore auto-suggestion" style="cursor:pointer;color:var(--muted);margin-left:5px">↺</span>`:''}`;
     const dots=['g','y','r'].map(c=>{
       const col=c==='g'?'#109648':c==='y'?'#e6b400':'#c82828';
       const on=st===c;
@@ -3467,7 +3440,7 @@ function rS3Battlemap(){
     h+=`<tr onclick="_ragCycle('${x.isin}')" title="click row to cycle: none → green → yellow → red" style="cursor:pointer;${tint}">
       <td style="${tdr};text-align:left">${dots}</td>
       <td style="${tdr};text-align:left;color:var(--muted)">${i+1}</td>
-      <td style="${tdr};text-align:left;font-weight:600;max-width:230px;overflow:hidden;text-overflow:ellipsis${x.manager==='BlackRock'?';color:#FF4713':''}" title="${esc(x.name)}">${esc(trunc(x.name,34))}</td>
+      <td style="${tdr};text-align:left;font-weight:600;max-width:260px;overflow:hidden;text-overflow:ellipsis${x.manager==='BlackRock'?';color:#FF4713':''}" title="${esc(x.name)}">${esc(trunc(x.name,38))}</td>
       <td style="${tdr};text-align:left">${esc(x.ticker||'')}</td>
       <td style="${tdr};text-align:left;color:var(--muted)">${esc(trunc(x.manager,14))}</td>
       <td style="${tdr}">${fmtBps(x.ter)}</td>
@@ -3475,7 +3448,7 @@ function rS3Battlemap(){
       +AFPS_L.map(a=>`<td style="${tdr};color:var(--muted)">${fmtV(aMaps[a].get(x.isin)||0)}</td>`).join('')
       +`<td style="${tdr};font-weight:700;color:${nnb>=0?'var(--green)':'var(--red)'}">${nnb>=0?'+':''}${fmtV(nnb)}</td>`
       +AFPS_L.map(a=>{const v=_afpNNB(x.isin,a,curM)||0;return `<td style="${tdr};color:${v>=0?'var(--green)':'var(--red)'}">${v>=0?'+':''}${fmtV(v)}</td>`;}).join('')
-      +`<td style="${tdr};text-align:left;font-size:.6rem">${altCell}</td></tr>`;
+      +`</tr>`;
   });
   h+='</tbody></table></div>';
   el.innerHTML=h;
